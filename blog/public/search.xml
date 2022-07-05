@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo 搭建 &amp; 使用指南</title>
+    <url>/2022/05/17/99-Others-01-hexo/</url>
+    <content><![CDATA[<h2 id="什么是Hexo"><a href="#什么是Hexo" class="headerlink" title="什么是Hexo"></a>什么是Hexo</h2><blockquote>
+<p>Hexo 是一个可以易于上手、部署的静态博客架构。使用node.js作为构建引擎，插件库丰富，可扩展性好。支持MarkDown作为书写语言，可以满足日常博客编写需求</p>
+</blockquote>
+<h2 id="Hexo-安装"><a href="#Hexo-安装" class="headerlink" title="Hexo 安装"></a>Hexo 安装</h2><p>安装Hexo前，需要本地环境已经安装有这两个东西:</p>
+<ul>
+<li>Node.js</li>
+<li>Git</li>
+</ul>
+<p>(这二者的安装就不在这里单独赘述了)</p>
+<p>如果你的环境没有问题了，那么就可以开始安装Hexo了:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，进入要作为博客资源的目录，执行:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo init blog  <span class="comment"># 初始化配置</span></span><br><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">npm install  <span class="comment"># 安装依赖包</span></span><br><span class="line">hexo server  <span class="comment"># 在本地启动一个临时服务，可以用来预览和调试</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="撰写博文"><a href="#撰写博文" class="headerlink" title="撰写博文"></a>撰写博文</h2><p>撰写博文也非常简单，在<code>blog</code>目录下执行:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new post &lt;title&gt;</span><br></pre></td></tr></table></figure>
+
+<p>例如想要创建一篇名为<code>hello</code>的博文:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new post hello</span><br></pre></td></tr></table></figure>
+
+<p>生成的文件路径是:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO Created: &lt;blog-dir&gt;/source/_posts/hello.md</span><br></pre></td></tr></table></figure>
+
+<p>打开文件，我们可以post模板已经自动帮我们生成了<code>yaml</code>文件头。其中<code>title</code>是文章的标题，<code>tags</code>是文章的标签。</p>
+<p>编辑好文章内容后，执行<code>hexo server</code>就可以看见这篇文章已经发布到博客中了</p>
+<h2 id="Hexo-部署"><a href="#Hexo-部署" class="headerlink" title="Hexo 部署"></a>Hexo 部署</h2><p>上文提到的<code>hexo server</code>的方式，只是在本地搭建了一个临时服务器，只能在本地访问。Hexo本身是一个静态页面的博客系统，因此对服务器的要求极低，Github免费提供的<code>Github Pages</code>就足以满足需求</p>
+<h3 id="1-创建托管仓库"><a href="#1-创建托管仓库" class="headerlink" title="1.创建托管仓库"></a>1.创建托管仓库</h3><p>这里建议创建一个名为<code>&lt;username&gt;.github.io</code>的仓库来托管我们的网页(因为正常情况下，我们创建的仓库的github page的url是<code>&lt;username&gt;.github.io/&lt;repo name&gt;/</code>, 在域名之后会有一级仓库名称，这会导致很多页面、主题的相对路径功能出现问题；而使用这种仓库名和域名相同的方式创建的仓库的page的url中就不会包含仓库名)</p>
+<h3 id="2-部署配置"><a href="#2-部署配置" class="headerlink" title="2. 部署配置"></a>2. 部署配置</h3><p>在博客的根目录下有一个<code>_config.yml</code>文件，这是博客的主配置文件。最后的<code>Deployment</code>配置项代表我们要使用的部署方式，如果我们要使用Git方式部署，那么需要安装一个hexo-deployer-git插件:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>然后编辑这里的配置:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repo: &lt;repo url&gt;  <span class="comment"># 建议使用ssh的方式</span></span><br><span class="line">  branch: [branch]  <span class="comment"># 默认可不填</span></span><br><span class="line">  message: [message]  <span class="comment"># 默认可不填</span></span><br></pre></td></tr></table></figure>
+
+<p>保存配置文件后，执行:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>上述命令可以简化成:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+
+<p>现在已经将博客部署到Github了。可以用过<code>http://&lt;username&gt;.github.io</code>来访问自己的博客了</p>
+<h2 id="Hexo-配置"><a href="#Hexo-配置" class="headerlink" title="Hexo 配置"></a>Hexo 配置</h2><p>在博客的主配置文件中除了配置部署相关的内容，还可以配置一些自定义的配置:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Site</span></span><br><span class="line">title: <span class="string">&#x27;&#x27;</span>  <span class="comment"># 站名</span></span><br><span class="line">subtitle: <span class="string">&#x27;&#x27;</span>  <span class="comment"># 副标题</span></span><br><span class="line">description: <span class="string">&#x27;&#x27;</span>  <span class="comment"># 对搜索引擎收录博客会有帮助</span></span><br><span class="line">author: <span class="string">&#x27;&#x27;</span></span><br><span class="line">language: zh-Hans  <span class="comment"># 配置中文显示或者英文显示</span></span><br><span class="line">timezone: <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># URL</span></span><br><span class="line"><span class="comment">## Set your site url here. For example, if you use GitHub Page, set url as &#x27;https://username.github.io/project&#x27;</span></span><br><span class="line">url: https://yoursite.com/ </span><br><span class="line">permalink: :year/:month/:day/:title/</span><br><span class="line">permalink_defaults:</span><br><span class="line">pretty_urls:</span><br><span class="line">  trailing_index: <span class="literal">true</span> <span class="comment"># Set to false to remove trailing &#x27;index.html&#x27; from permalinks</span></span><br><span class="line">  trailing_html: <span class="literal">true</span> <span class="comment"># Set to false to remove trailing &#x27;.html&#x27; from permalinks</span></span><br></pre></td></tr></table></figure>
+<p>这部分配置只需要将url配置成自己的博客地址即可，例如部署在github page，就可以填 <code>https://&lt;username&gt;.github.io/project</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line">theme: ayer  </span><br></pre></td></tr></table></figure>
+<p>主题配置，Hexo社区有大量的主题可供选择, 可以参考<a href="https://hexo.io/themes/">官方列表</a></p>
+<h2 id="Hexo-主题"><a href="#Hexo-主题" class="headerlink" title="Hexo 主题"></a>Hexo 主题</h2><p>主题的使用也非常简单，这里以<code>AYER</code>主题为例。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Shen-Yu/hexo-theme-ayer.git themes/ayer</span><br></pre></td></tr></table></figure>
+
+<p>把你想要的主题<code>git clone</code>下来，放到<code>themes/</code>下对应的目录中，然后我们修改博客主配置中<code>theme</code>配置，保存后，再次执行<code>hexo server</code>命令，预览一下变化</p>
+<p>主题的配置一般放在<code>themes/&lt;themename&gt;/_config.yml</code>文件下，具体配置参考<a href="https://shen-yu.gitee.io/2019/ayer/">官方文档</a>即可</p>
+]]></content>
+      <categories>
+        <category>折腾</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode.139 | 单词拆分</title>
+    <url>/2022/05/20/00-Leetcode-139-word-break/</url>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a><a href="https://leetcode.cn/problems/word-break/">题目描述</a></h2><blockquote>
+<p>给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。<br>注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。</p>
+</blockquote>
+<p>示例 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入: s = &quot;leetcode&quot;, wordDict = [&quot;leet&quot;, &quot;code&quot;]</span><br><span class="line">输出: true</span><br><span class="line">解释: 返回 true 因为 &quot;leetcode&quot; 可以由 &quot;leet&quot; 和 &quot;code&quot; 拼接成。</span><br></pre></td></tr></table></figure>
+
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>假如要判断字符串”catsanddog”是否满足条件，我们可以采取<code>分而治之</code>的思路去思考，比如将字符串切割成两部分去分别判断，当前后两部分都满足条件时则可以证明这个字符串整体也是满足条件的；</p>
+<p>这种思路的本质是将字符串分为两部分去看，后半部分为<code>本次待判断</code>的字符串，前半部分为不包括最后一个字符串的其余部分。那么如何求前半部分是否满足条件呢? 也可以通过相同的方式在进行一次分割判断。</p>
+<p>此时已经将此问题翻译成了一个标准的动态规划题目</p>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>代码实现上可以采取两层循环的方式: <code>外层循环</code>设置变量i作为每个<code>待判断子串</code>(即s[0,i])的结尾。从1开始，循环至字符串最后一个字符，逐步判断每个子串是否满足条件，并将结果记录下来方便对下个子串进行判断时的搜索。即逐步判断’c’, ‘ca’, ‘cat’, ‘cats’ … ‘catsanddog’是否满足条件。 </p>
+<p><code>内层循环</code>设置变量j在每个由外层循环切割出的子串内进行<code>遍历切割</code>，根据记忆化搜索的结果判断当前子串是否满足条件。比如待判断子串为’catsanddog’时，将其切割为[‘c’, ‘atsanddog’]、[‘ca’, ‘tsanddog’]等等，最终发现切割为[‘catsand’, ‘dog’]时可以满足条件(‘catsand’子串命中记忆化搜索，’dog’命中字典)</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">wordBreak</span><span class="params">(s <span class="type">string</span>, wordDict []<span class="type">string</span>)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">    wordDictSet := <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">bool</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> _,v := <span class="keyword">range</span> wordDict&#123;</span><br><span class="line">        wordDictSet[v] = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    dp := <span class="built_in">make</span>([]<span class="type">bool</span>, <span class="built_in">len</span>(s)+<span class="number">1</span>)</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">for</span> i:=<span class="number">1</span>;i&lt;=<span class="built_in">len</span>(s);i++&#123;</span><br><span class="line">        <span class="keyword">for</span> j:=<span class="number">0</span>;j&lt;i;j++&#123;</span><br><span class="line">            <span class="keyword">if</span> dp[j] &amp;&amp; wordDictSet[s[j:i]]&#123;</span><br><span class="line">                dp[i] = <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[<span class="built_in">len</span>(s)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>刷题</category>
+      </categories>
+      <tags>
+        <tag>动态规划</tag>
+      </tags>
+  </entry>
+</search>
