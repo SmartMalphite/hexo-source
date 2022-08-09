@@ -2,7 +2,7 @@
 title: LeetCode.139 | 单词拆分
 date: 2022-05-20 00:25:49
 categories: 
-    - 刷题
+    - LeetCode
 tags: 
     - 动态规划
 ---
