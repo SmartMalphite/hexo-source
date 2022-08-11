@@ -31,6 +31,7 @@ i18n_dir: :lang
 skip_render:
 
 # Writing
+# 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
 new_post_name: :title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
