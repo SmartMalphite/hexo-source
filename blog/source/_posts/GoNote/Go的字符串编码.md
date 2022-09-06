@@ -24,6 +24,7 @@ for i := 0; i < len(s); i++ {
   fmt.Printf("0x%x ", s[i]) // 0xe4 0xb8 0xad 0xe5 0x9b 0xbd 0xe4 0xba 0xba
 }
 
+
 // 字符视角
 fmt.Println("the character count in s is", utf8.RuneCountInString(s)) // 3
 for _, c := range s {

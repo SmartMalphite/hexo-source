@@ -8,7 +8,7 @@ subtitle: ''
 description: ''
 keywords:
 author: Enbo Wang
-language: zh-Hans
+language: zh-CN
 timezone: ''
 
 # URL
@@ -98,7 +98,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: ayer-self
+theme: fluid
 
 search:
   path: search.xml
