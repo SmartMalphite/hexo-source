@@ -1,54 +1,78 @@
 ---
-title: LeetCode.139 | 单词拆分
-date: 2022-05-20 00:25:49
+title: LeetCode.209 | 长度最小的子数组
+date: 2022-08-10 00:23:49
 categories: 
     - LeetCode
 tags: 
-    - 动态规划
+    - 前缀和
+    - 二分法
 ---
 
-## [题目描述](https://leetcode.cn/problems/word-break/)
+## [题目描述](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+![](https://raw.githubusercontent.com/SmartMalphite/PicBed/master/img-hexo/20220810002446.png)
 
-> 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
-注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+## 题目翻译
+在一串数组中，找到连续的、和大于等于target值的子数组，并找到其中最短的那个，返回它的长度
 
-示例 ：
+## 心路历程
+### 直观思路
+对于这类问题，一个朴素的思路就是采用双层循环的方式暴力破解，但是暴力破解不满足题目对时间复杂度的要求
 
-```
-输入: s = "leetcode", wordDict = ["leet", "code"]
-输出: true
-解释: 返回 true 因为 "leetcode" 可以由 "leet" 和 "code" 拼接成。
-```
-
-## 解题思路
-假如要判断字符串"catsanddog"是否满足条件，我们可以采取`分而治之`的思路去思考，比如将字符串切割成两部分去分别判断，当前后两部分都满足条件时则可以证明这个字符串整体也是满足条件的；
-
-这种思路的本质是将字符串分为两部分去看，后半部分为`本次待判断`的字符串，前半部分为不包括最后一个字符串的其余部分。那么如何求前半部分是否满足条件呢? 也可以通过相同的方式在进行一次分割判断。
-
-此时已经将此问题翻译成了一个标准的动态规划题目
-
-## 实现思路
-代码实现上可以采取两层循环的方式: `外层循环`设置变量i作为每个`待判断子串`(即s[0,i])的结尾。从1开始，循环至字符串最后一个字符，逐步判断每个子串是否满足条件，并将结果记录下来方便对下个子串进行判断时的搜索。即逐步判断'c', 'ca', 'cat', 'cats' ... 'catsanddog'是否满足条件。 
-
-`内层循环`设置变量j在每个由外层循环切割出的子串内进行`遍历切割`，根据记忆化搜索的结果判断当前子串是否满足条件。比如待判断子串为'catsanddog'时，将其切割为['c', 'atsanddog']、['ca', 'tsanddog']等等，最终发现切割为['catsand', 'dog']时可以满足条件('catsand'子串命中记忆化搜索，'dog'命中字典)
-
-## 代码实现
+### 如何不使用双层循环嵌套完成数组的遍历
+观察数组的特点，由于每个元素都>=1, 那么其依次加和得到的`前缀和数组`一定是一个单调递增数组，我们可以首先通过一次循环完成其前缀和数组的初始化。
+例如nums=[1,2,3,4], 其前缀和数组S就是[0,1,3,6,10]. 即s[i] = s[i-1] + nums[i-1] 
+![](https://raw.githubusercontent.com/SmartMalphite/PicBed/master/img-hexo/20220810015239.png)
 
 ```go
-func wordBreak(s string, wordDict []string) bool {
-    wordDictSet := map[string]bool{}
-    for _,v := range wordDict{
-        wordDictSet[v] = true
+func minSubArrayLen(target int, nums []int) int {
+    s := make([]int, len(nums)+1)
+    s[0] = 0
+    for i:=1;i<=len(nums);i++{
+        s[i] = s[i-1] + nums[i-1]
     }
-    dp := make([]bool, len(s)+1)
-    dp[0] = true
-    for i:=1;i<=len(s);i++{
-        for j:=0;j<i;j++{
-            if dp[j] && wordDictSet[s[j:i]]{
-                dp[i] = true
+```
+
+### 得到前缀和数组S之后怎么找到符合要求的子数组
+由于前缀和数组S中每个值代表的都是前i位数据的和，那么当出现S[i] >= target之后， 我们需要找到一个元素，使其满足 `s[x] <= s[i] - target`
+
+例如nums=[2,3,1,2,4,3], 其前缀和数组S就是[0,2,5,6,8,12,15]. Target=7
+当遇到`S[4]=8`大于等于Target时，找到小于等于`8-7=1`的最后一个值，也就是`S[0]`.此时的子数组长度为`4-0=4`
+
+## 整体代码实现
+```go
+func minSubArrayLen(target int, nums []int) int {
+    result := math.MaxInt32
+    s := make([]int, len(nums)+1)
+    s[0] = 0
+    for i:=1;i<=len(nums);i++{
+        s[i] = s[i-1] + nums[i-1]
+    }
+    for k, v := range s{
+        if v < target{
+            continue
+        }
+        d := v - target
+        l, r := 0, k
+        for l <= r {
+            mid := (l + r) / 2
+            if s[mid] > d{
+                r = mid - 1
+            }else{
+                l = mid + 1
             }
         }
+        result = min(result, k-r)
     }
-    return dp[len(s)]
+    if result == math.MaxInt32{
+        return 0
+    }
+    return result
+}
+
+func min(a,b int) int{
+    if a < b{
+        return a
+    }
+    return b
 }
 ```
